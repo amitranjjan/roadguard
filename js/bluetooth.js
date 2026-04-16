@@ -21,7 +21,10 @@ const bluetooth = {
     try {
       ui.showToast('Scanning for RoadGuard device…');
       this.device = await navigator.bluetooth.requestDevice({
-        filters: [{ name: 'RoadGuard' }],
+        filters: [
+          { name: 'RoadGuard' },
+          { namePrefix: 'RoadGuard' }
+        ],
         optionalServices: [BLE_SERVICE_UUID]
       });
 
