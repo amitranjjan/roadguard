@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>RoadGuard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash" class="screen active">
+    <div class="splash-bg"></div>
+    <div class="splash-content">
+      <div class="logo-mark">
+        <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M20 38 L30 18 L40 38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="23" y1="32" x2="37" y2="32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>RoadGuard</h1>
+      <p class="tagline">Accident detection. Instant alert.</p>
+      <button class="btn-primary" onclick="navigate('home')">Get Started</button>
+    </div>
+  </div>
+
+  <!-- HOME / DASHBOARD -->
+  <div id="home" class="screen">
+    <header class="topbar">
+      <div class="topbar-title">RoadGuard</div>
+      <button class="icon-btn" onclick="navigate('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="dashboard">
+      <!-- Status Card -->
+      <div class="status-card" id="statusCard">
+        <div class="status-indicator" id="statusIndicator"></div>
+        <div class="status-text">
+          <span class="status-label" id="statusLabel">Disconnected</span>
+          <span class="status-sub" id="statusSub">Tap to connect device</span>
+        </div>
+        <button class="connect-btn" id="connectBtn" onclick="bluetooth.connect()">Connect</button>
+      </div>
+
+      <!-- GPS Card -->
+      <div class="info-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+            <circle cx="12" cy="12" r="9" stroke-dasharray="2 3"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Location</div>
+          <div class="card-value" id="gpsValue">Waiting...</div>
+          <div class="card-source" id="gpsSource">—</div>
+        </div>
+        <div class="gps-dot" id="gpsDot"></div>
+      </div>
+
+      <!-- Tilt Card -->
+      <div class="info-card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 19h20L12 2z"/><line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Tilt Status</div>
+          <div class="card-value" id="tiltValue">—</div>
+          <div class="card-source" id="tiltStatus">No data from device</div>
+        </div>
+        <div class="tilt-bar-wrap">
+          <div class="tilt-bar" id="tiltBar"></div>
+        </div>
+      </div>
+
+      <!-- Alert Countdown (hidden normally) -->
+      <div class="alert-countdown hidden" id="alertCountdown">
+        <div class="countdown-ring">
+          <svg viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="34" stroke="#1a1a1a" stroke-width="6" fill="none"/>
+            <circle cx="40" cy="40" r="34" stroke="#ff3b30" stroke-width="6" fill="none"
+              stroke-dasharray="213.6" stroke-dashoffset="213.6"
+              id="countdownCircle" stroke-linecap="round"
+              transform="rotate(-90 40 40)"/>
+          </svg>
+          <span id="countdownNum">10</span>
+        </div>
+        <div class="countdown-text">
+          <strong>Tilt Detected!</strong>
+          <span>Sending alert in <span id="countdownSec">10</span>s</span>
+        </div>
+        <button class="cancel-btn" onclick="crash.cancelAlert()">Cancel</button>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="action-row">
+        <button class="action-card" onclick="navigate('contacts')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Contacts</span>
+        </button>
+        <button class="action-card" onclick="navigate('log')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/>
+          </svg>
+          <span>Alert Log</span>
+        </button>
+        <button class="action-card sos-card" onclick="crash.manualSOS()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>Manual SOS</span>
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" onclick="navigate('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Profile</div>
+      <div style="width:40px"></div>
+    </header>
+    <main class="form-page">
+      <div class="avatar-block">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="profileName" placeholder="e.g. Arun Kumar" />
+      </div>
+      <div class="form-group">
+        <label>Your Phone (with country code)</label>
+        <input type="tel" id="profilePhone" placeholder="+919876543210" />
+      </div>
+      <div class="form-divider"></div>
+      <div class="form-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Data saved locally on your device only.
+      </div>
+      <button class="btn-primary" onclick="profile.save()">Save Profile</button>
+    </main>
+  </div>
+
+  <!-- CONTACTS -->
+  <div id="contacts" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" onclick="navigate('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Emergency Contact</div>
+      <div style="width:40px"></div>
+    </header>
+    <main class="form-page">
+      <div class="contact-hero">
+        <div class="contact-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6.29 6.29l.87-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <p>This contact will receive a WhatsApp message with your location when an accident is detected.</p>
+      </div>
+      <div class="form-group">
+        <label>Contact Name</label>
+        <input type="text" id="contactName" placeholder="e.g. Mom / Dad / Friend" />
+      </div>
+      <div class="form-group">
+        <label>WhatsApp Number (with country code)</label>
+        <input type="tel" id="contactPhone" placeholder="+919876543210" />
+      </div>
+      <button class="btn-primary" onclick="contacts.save()">Save Contact</button>
+
+      <div class="admin-notice">
+        <div class="admin-badge">ADMIN</div>
+        <span>RoadGuard admin is always notified automatically.</span>
+      </div>
+    </main>
+  </div>
+
+  <!-- ALERT LOG -->
+  <div id="log" class="screen">
+    <header class="topbar">
+      <button class="icon-btn" onclick="navigate('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"/>
+        </svg>
+      </button>
+      <div class="topbar-title">Alert Log</div>
+      <button class="icon-btn" onclick="logManager.clear()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </button>
+    </header>
+    <main class="log-page">
+      <div id="logList" class="log-list"></div>
+      <div id="logEmpty" class="log-empty hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+        </svg>
+        <p>No alerts yet.</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/ui.js"></script>
+  <script src="js/contacts.js"></script>
+  <script src="js/bluetooth.js"></script>
+  <script src="js/crash.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
